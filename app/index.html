@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ru">
+ <head>
+ <meta charset="UTF-8">
+ <title>Socket.IO</title>
+
+ <script src="https://cdn.socket.io/3.1.3/socket.io.min.js" integrity="sha384-cPwlPLvBTa3sKAgddT6krw0cJat7egBga3DJepJyrLl4Q9/5WLra3rrnMcyTyOnh" crossorigin="anonymous"></script>
+
+
+ </head>
+  
+    <body>
+        <h1>Web Scoket test interface</h1>
+        <div>
+            <label>Message-header
+                <input id="message-header" type="text">
+            </label>
+        </div>
+        <div>
+            <label>Room number (ID)
+                <input id="room-number" type="text">
+            </label>        
+        </div>
+        <div>
+            <label>Message text
+                <input id="message-text" type="text">
+            </label>        
+        </div>
+        <button id="send-button" type="button">Send</button>
+       
+        <script>
+            //Привязки к элементам
+            const mHeader = document.getElementById('message-header');
+            const rNumber = document.getElementById('room-number');
+            const mText = document.getElementById('message-text');
+            const sendBtn = document.getElementById('send-button');
+
+            // Инициируем подключение к серверу
+            const socket = io();
+            
+            const header = mHeader.value || 'test';
+            const message = mText.value || 'Test message';
+            const userName = 'Default user';
+
+            sendBtn.addEventListener('click', (e) => {
+                console.log('clicked');
+                socket.emit(header, {
+                    username: userName,
+                    message: mText
+                });
+            });
+            
+            
+        </script>
+    
+    </body>
+</html>
