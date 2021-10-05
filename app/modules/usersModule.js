@@ -11,14 +11,10 @@ class Users {
             const emailIsOccupied = await Users.findByEmail(email); //Check, if email is occupied
 
             if (!emailIsOccupied) {
-                //First hash the password before user creation
-                const salt = bcrypt.genSaltSync(10);
+                const salt = bcrypt.genSaltSync(10);    //First hash the password before user creation
                 const passwordHash = bcrypt.hashSync(password, salt);
                 
-                //const passwordHash = password;
-
-                //Create new user
-                const newUser = new User({email, passwordHash, name});
+                const newUser = new User({email, passwordHash, name, contactPhone}); //Create new user
                 
                 //Save user to the DB
                 try {
@@ -28,7 +24,7 @@ class Users {
                     return null;
                 }
             } else {
-                return `User with email ${email} already exist`;
+                return null;
             }
         }    
     }

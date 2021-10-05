@@ -11,6 +11,9 @@ mongoose.set('useFindAndModify', false);
 mongoose.set('useCreateIndex', true);
 mongoose.set('useUnifiedTopology', true);
 
+//
+const chatsModule = require('./modules/chatsModule');
+
 //Get routers + middlewares
 const signinRouter = require('./routers/signinRouter'); //Authentification router
 const signupRouter = require('./routers/signupRouter'); //Registration router
@@ -25,6 +28,9 @@ const app = express();              //Get and init express object
 const server = http.Server(app);    //Get server 
 const io = socketIO(server);  //Init socket IO
 
+//Add JSON middleware
+app.use(express.json());
+
 //Add session module
 const {sessionMiddleware, session} = require('./middleware/session');
 app.use(sessionMiddleware);
@@ -33,52 +39,44 @@ app.use(sessionMiddleware);
 app.use(passport.initialize()); 
 app.use(passport.session());
 
+//Static for test browser interface
+app.use(express.static('public'));
+
+
 //Routers - application operations + errors
-app.use('/', (req, res, next) => {
-    res.sendFile(path.resolve(__dirname, 'index.html'));
-    next();
-});
 app.use('/api/signin', signinRouter);
 app.use('/api/signup', signupRouter);
 app.use('/api/advertisements', advertisementsRouter);
+
+app.use('/', (req, res) => {
+    res.sendFile(path.resolve(__dirname, './public/index.html'));    
+});
+
 app.use(errorMiddleware); //No reply processing
 
 //*** SOCKET IO ***/
-//const {getHistory, sendMessage} = require('./io/ioHandlers')(io);
+const {sendMessage, getHistory} = require('./io/ioHandlers')(io);
+const wrap = middleware => (socket, next) => middleware(socket.request, {}, next);
+io.use(wrap(sessionMiddleware));
+io.use(wrap(passport.initialize()));
+io.use(wrap(passport.session()));
 
-//const wrap = middleware => (socket, next) => middleware(socket.request, {}, next);
-//io.use(wrap(sessionMiddleware));
-//io.use(wrap(passport.initialize()));
-//io.use(wrap(passport.session()));
-/*
+
 const onConnection = (socket) => {
-    const {id} = socket;
-    console.log(`Socket connected: ${id}`);
 
-    socket.on('test', (msg) => {
-        console.log(`tested IO ${msg}`);
-    });
-
-    socket.on('getHistory', getHistory);
-    socket.on('sendMessage', sendMessage);
+    if (!socket.request.isAuthenticated || !socket.request.isAuthenticated()) {
+        console.log("Пользователь неавторизован ", socket.id);
+    } else { 
+        console.log("Пользователь авторизован - чат доступен ", socket.request.user.id);
+        chatsModule.subscribe(socket);              
+        
+        socket.on('getHistory', getHistory);
+        socket.on('sendMessage', sendMessage);
+    }
 };
+
 io.on('connection', onConnection);
-*/
 
-io.on('connection', (socket) => {
-    
-    const {id} = socket;
-    console.log(`Socket connected: ${id}`);
-
-    socket.on('test', (msg) => {
-        console.log(`tested IO ${msg}`);
-    });
-
-    socket.on('disconnect', () => {
-        console.log(`Socket disconnected: ${id}`);
-    });
-
-});
 
 /////////////////////////////////////////
 ///*** SERVER start and DB connection***/
@@ -101,7 +99,7 @@ async function start() {
 
         await mongoose.connect(HostDb, options);
         
-        app.listen(SERVER_PORT, console.log(`Server has started on port: ${SERVER_PORT}`));
+        server.listen(SERVER_PORT, console.log(`Server has started on port: ${SERVER_PORT}`));
 
     } catch (e) {
         console.log(e);

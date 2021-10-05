@@ -5,7 +5,7 @@ const {verify, findById} = require('./users.js'); // Get modules for users opera
 // PassportJS initialization data
 options = {
     usernameField: 'email',
-    password: 'password',
+    passwordField: 'password',
     passReqToCallback: false,
 }
 

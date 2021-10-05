@@ -7,11 +7,11 @@ const formData = require('express-form-data');
 const {passport} = require('../passport/index');
 
 router.post('/', 
-    formData.parse(),
     function(req, res, next) {
-
+               
         if (req.body.password && req.body.email) {
             passport.authenticate('local', function(err, user, info) {
+               
             if (err) { 
                 return res.status(400).json({
                     "error": info,
@@ -24,17 +24,18 @@ router.post('/',
                     "status":"error"
                 });
             }
-            req.logIn(user, function(err) {
+
+            req.logIn(user, function(err) {                
                 if (err) { return next(err); }
                     const {_id, email, name, contactPhone} = user;
                     return res.status(200).json({
-                        "data": {
-                            "id": _id,
-                            "email": email,
-                            "name": name,
-                            "contactPhone": ((contactPhone === undefined)? "не указан": contactPhone)
+                        data: {
+                            id: _id,
+                            email: email,
+                            name: name,
+                            contactPhone: ((contactPhone === undefined)? "not defined": contactPhone)
                         },
-                        "status": "ok"
+                        status: "ok"
                     });
                  });
             })(req, res, next);  
@@ -48,22 +49,46 @@ router.post('/',
     }    
 );
 
+//Added for testing only
 router.get('/me',
     function (req, res) {
         if (req.user) {
             res.status(200).json(req.user);
         } else {
-            res.status(200).json('No user signedin');
+            res.status(200).json({
+                reply: 'No user logged in'
+            });
         }
     }
 );
 
+//Added for testing only
 router.get('/logout',
     function (req, res) {
-        req.logout();
-        res.status(200).json('Successfully logged out!');
+        if (req.user) {
+            req.logout();
+            res.redirect('/api/signin/logout/done');
+            
+            /*
+            res.status(200).json({
+                reply: 'Successfully logged out!'
+            });
+            */
+
+        } else {
+            res.status(200).json({
+                reply: 'No user logged in'
+            });
+        }
     }
 );
+
+
+router.get('/logout/done', (req, res) => {
+    res.json({
+        response: 'Logout done'
+    });
+})
 
 module.exports = router;
 
