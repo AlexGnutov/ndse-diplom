@@ -30,7 +30,7 @@ function saveAndPublishResponse(resp) {
 function saveAndPublishUserData(resp) {
     user.name = resp.data.name;
     user.email = resp.data.email;
-    user.id = resp.data.id;
+    user.id = resp.data._id;
     localStorage.setItem('user', JSON.stringify(user));     
 }
 

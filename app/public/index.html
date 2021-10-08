@@ -9,111 +9,158 @@
  <link href="style.css" rel="stylesheet">
  
  </head>
-  
     <body>
-        <h1>Test panel</h1>
-
-        <div id="current-user" class="current-user"></div>
-    <!-- Socket IO test block -->
-    <div class="container">
-        <div class="test-box">
-            <h2>Web Scoket test interface</h2>
-            <div>
-                <label class="form-label">
-                    <span class="label-text">Chat-ID</span>
-                    <input class="form-input" id="chat-id" type="text">
-                </label>
-            </div>
-            <div>
-                <label class="form-label">
-                    <span class="label-text">Receiver (ID)</span>
-                    <input class="form-input" id="receiver-id" type="text">
-                </label>        
-            </div>
-            <div>
-                <label class="form-label">
-                    <span class="label-text">Message text</span>
-                    <textarea class="form-input" id="message-text"></textarea>
-                </label>        
-            </div>
-            <button id="send-button" type="button">Send</button>
-            <button id="gethistory-button" type="button">Gethistory</button>
+  
+        <div class="container">
+            <h2>Frontend panel for project tests (no data validation)</h2>
+        </div>
+        
+        <!-- Status string -->
+        <div class="container status-string">
+            <p id="current-user"></p>
         </div>
 
-        <div class="test-box" style="width: 300px">
-            <div>Socket IO output</div>
-            <div id="io-output"></div>
-        </div> 
-    </div>   
-                
-    <!-- Registration form - only for testing the server in Browser -->
-        
-    <div class="container">
-        
-        <div class='formblock'>
-            <h2>SignUP</h2>
-            <div class="test-box">
-                    <div>
-                        <label class="form-label">
-                            <span class="label-text">Email:</span>
-                            <input class="form-input" id="signup-email">
-                        </label>
-                    </div>    
-                    <div>
-                        <label class="form-label">
-                            <span class="label-text">Password:</span>
-                            <input class="form-input" id="signup-password">
-                        </label>
-                    </div>
-                    <div>
-                        <label class="form-label">
-                            <span class="label-text">Name:</span>
-                            <input class="form-input" id="signup-name">
-                        </label>
-                    </div>
-                    <div>
-                        <label class="form-label">
-                            <span class="label-text">ContactPhone:</span>
-                            <input class="form-input" id="signup-contactphone">
-                        </label>
-                    </div>
-                    <button id="signup-button">Sign UP</button>                
+        <!-- Socket IO test block -->
+        <div class="container">
+            <div class="socket-input block">
+                <h3 class="block-header">Web Socket input</h3>
+                <div class="block-row">
+                        <label class="label-text">Receiver (ID):</label>
+                        <input class="block-input" id="receiver-id" type="text">                       
+                </div>
+                <div class="block-row">
+                        <label class="label-text">Message text:</label>
+                        <textarea class="message-input" id="message-text"></textarea>
+                </div>
+                <div class="block-row">
+                    <button id="send-button" type="button">"sendMessage"</button>
+                    <button id="gethistory-button" type="button">"getHistory"</button>
+                </div>            
             </div>
+
+            <div class="socket-output block">
+                <h3 class="block-header">Socket IO output:</h3>
+                <div class="socket-output-text" id="io-output"></div>
+            </div>         
         </div>
 
-        <div class='formblock'>
-            <h2>SignIn</h2>
-            <div class="test-box">
-                    <div>
-                        <label class="form-label">
-                            <span class="label-text">Email:</span>
-                            <input class="form-input" id="signin-email">
-                        </label>
-                    </div>    
-                    <div>
-                        <label class="form-label">
-                            <span class="label-text">Password:</span>
-                            <input class="form-input" id="signin-password">
-                        </label>
-                    </div>
+        <!-- HTTP IO output -->
+        <div class="container">
+            <div class="io-block">
+                <h3 class="block-header">Sent to server (http):</h3>
+                <div class="io-output-text" id="req"></div>
+            </div>
+            <div class="io-block">
+                <h3 class="block-header">Server response (http):</h3>
+                <div class="io-output-text" id="res"></div>
+            </div>
+        </div>   
+
+        <!-- Registration form - only for testing the server in Browser -->
+        <div class="container">
+
+            <!-- SIGN UP --> 
+            <div class="block">
+                <h3 class="block-header">SignUP</h3>
+                <div class="block-row">
+                    <label class="label-text">Email:</label>
+                    <input class="block-input" id="signup-email">
+                </div>    
+                <div class="block-row">
+                    <label class="label-text">Password:</label>
+                    <input class="block-input" id="signup-password">                        
+                </div>
+                <div class="block-row">
+                    <label class="label-text">Name:</label>
+                    <input class="block-input" id="signup-name">                        
+                </div>
+                <div class="block-row">
+                    <label class="label-text">ContactPhone:</label>
+                    <input class="block-input" id="signup-contactphone">
+                </div>
+                <button id="signup-button">Sign UP</button>                
+            </div>
+            
+            <!-- SIGN IN --> 
+            <div class="block">
+                <h3 class="block-header">SignIn</h3>
+                <div class="block-row">
+                    <label class="label-text">Email:</label>
+                    <input class="block-input" id="signin-email">
+                </div>    
+                <div class="block-row">
+                    <label class="label-text">Password:</label>
+                    <input class="block-input" id="signin-password">
+                </div>
                     <button id="signin-button">Sign IN</button>                    
-             </div>
+            </div>
+
+
+            <div class="block">
+                <h3 class="block-header">me & Logout</h3>
+                <button id="logout-button">Logout</button> 
+                <button id="me-button">Me</button> 
+            </div>
+            
         </div>
 
-        <div class='formblock'>
-            <h2>me* / Logout*</h2>
-            <button id="logout-button">Logout</button> 
-            <button id="me-button">Me</button> 
+        <div class="container">
+            
+            <!-- Get advertisements --> 
+            <div class="block">
+                <h3 class="block-header">Get adv. list</h3>
+                <button id="get-advs-button">Make request</button>                    
+            </div>
+
+            <!-- Get ADV data by ID --> 
+            <div class="block">
+                <h3 class="block-header">Get adv. data by ID</h3>
+                <div class="block-row">
+                    <label class="label-text">ID:</label>
+                    <input class="block-input" id="id-to-show" type="text">
+                </div>
+                <button id="get-advdata-button">Request</button>                    
+            </div>
 
         </div>
-        
-    </div>
 
-    <div>
-        <h3>Server response:</h3>
-        <div id="res"></div>
-    </div>
-        
+        <div class="container">
+            <!-- Post an ADV --> 
+            <div class="block">
+                <h3 class="block-header">Post an adv.</h3>
+                <form id="post-adv-form">
+                    <div class="block-row">
+                        <label class="label-text">shortText:</label>
+                        <input class="block-input" name="shortText" type="text">
+                    </div>
+                    <div class="block-row">
+                        <label class="label-text">description:</label>
+                        <input class="block-input" name="description" type="text">
+                    </div>
+                    <div class="block-row">
+                        <label class="label-text">tags:</label>
+                        <input class="block-input" name="tags" type="text">
+                    </div>
+                    <div class="block-row">
+                        <label class="label-text">images:</label>
+                        <input class="block-input" name="images" type="file">
+                    </div>
+                    <button id="post-adv-button">Send</button>                    
+                </form>
+            </div>
+
+            <!-- Delete an ADV -->
+            <div class="block">
+                <h3 class="block-header">Delete by ID</h3>
+                <div class="block-row">
+                    <label class="label-text">ID:</label>
+                    <input class="block-input" id="id-to-delete">
+                </div>
+                <button id="post-delete-button">Delete</button>                    
+            </div>
+
+        </div>  
+    
         <script src="./js/script.js"></script>
         <script src="./js/localstorage.js"></script>
         <script src="./js/socket_io.js"></script>
@@ -121,5 +168,6 @@
         <script src="./js/signUP.js"></script>
         <script src="./js/signIN.js"></script>
         <script src="./js/logout.js"></script>
+        <script src="./js/advertisements.js"></script>
     </body>
 </html>

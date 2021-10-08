@@ -1,23 +1,73 @@
 .container {
     display: flex;
+    width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 25px;
+    background-color: lightgrey;    
 }
 
-.formblock {
-    width: 30%;
-    margin: 2px;
+/*status string*/
+.status-string {
+    font-weight: 600;
+    background-color: lightskyblue;
+    padding-left: 10px;
 }
 
-.test-box {
+/*blocks styles*/
+.block {
+    box-sizing: border-box;
     padding: 5px;
     border: 2px black solid;
     border-radius: 5px;
-    background-color: beige;    
+    background-color: beige;        
+    flex-grow: 1;
+}
+.socket-input {
+    width: 300px;
+}
+.socket-output {
+    width: 500px;
 }
 
+.block-header {
+    margin: 0 0 10px 0;
+    padding: 0;
+}
+.socket-output-text {
+    min-height: 120px;
+    background-color: white;
+    overflow-y: scroll;
+}
+.block-row {
+    margin-bottom: 5px;
+}
 .label-text {
     display: inline-block;
+    vertical-align: top;
+    width: 100px;
+}
+.block-input {
     width: 150px;
 }
-.form-input {
-    width: 100px;
+.message-input {
+    width: 150px;
+    min-height: 75px;
+}
+
+/*IO blocks styles*/
+
+.io-block {
+    width: 50%;
+    box-sizing: border-box;
+    padding: 5px;
+    border: 2px black solid;
+    border-radius: 5px;
+    background-color: lightskyblue;
+}
+
+.io-output-text {
+    min-height: 120px;
+    background-color: white;
+    overflow-y: auto;
 }

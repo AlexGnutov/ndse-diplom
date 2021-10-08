@@ -21,7 +21,7 @@ router.get('/', async (req, res) => {
         res.status(200).json(data);     
     } catch(e) {
         console.log(e.message) 
-        res.status(404).json(`Server or Database error`);       
+        res.status(500).json(`Server or Database error`);       
     }      
 });
 
@@ -29,12 +29,21 @@ router.get('/', async (req, res) => {
 router.get('/:id', 
     async (req, res) => {
         const {id} = req.params;
+        console.log(id);
+
         try {
             const foundAdv = await AdvertisementsModule.find({id});
-            res.status(200).json(foundAdv);            
+            console.log(foundAdv);
+            res.status(200).json({
+                data: foundAdv,
+                status: "Ok"
+            });            
         } catch(e) {
             console.log(e.message);
-            res.status(404).json(`Server or Database error`);
+            res.status(500).json({
+                error: "Server or Database error",
+                status: "error"
+            });
         }        
 });
 
@@ -45,19 +54,43 @@ router.post('/',
     async (req, res) => {
         
         let images = [];
-
         if (req.files) {
             req.files.forEach(file => {
                 images.push(file.path);
             });
         }
 
-        const {shortText, userId, createdAt, updatedAt, description, tags} = req.body;
+        const userId = req.user._id;
+        const createdAt = new Date();
+        const updatedAt = createdAt;
+
+        const {shortText, description, tags} = req.body;
+
         const data = {shortText, userId, createdAt, updatedAt, description, tags, images}; 
         
-        const newAdvertisement = await AdvertisementsModule.create(data); 
-        res.status(200).json(`Created: ${newAdvertisement}`);
-        
+        try {
+            const newAdvertisement = await AdvertisementsModule.create(data); 
+            
+            res.status(200).json({
+                data: newAdvertisement,
+                status: "Ok"
+            });
+
+        } catch(e) {
+            if (e.message === 'Недостаточно данных') {
+                console.log(e.message);
+                res.status(400).json({
+                    error: e.message,
+                    status: "error"
+                });
+            } else {
+                console.log(e.message);
+                res.status(500).json({
+                    error: e.message,
+                    status: "error"
+                });
+            }            
+        }                
     }  
 );
 
@@ -65,9 +98,51 @@ router.post('/',
 router.post('/:id', 
     authCheck,
     async (req, res) => {
+        
         const {id} = req.params;
-        const isDeleted = await AdvertisementsModule.remove(id);
-        res.status(200).json(isDeleted);
+        let authorId;        
+
+        // Find the ADV to get author ID
+        try {
+            const foundAdv = await AdvertisementsModule.find({id: id});
+            if (foundAdv) {
+                authorId = foundAdv.userId;
+            } else {
+                res.status(400).json({
+                    error: "Объявление не найдено",
+                    status: "error"
+                });
+            }
+        } catch(e) {
+            console.log(e.message)
+            res.status(500).json({
+                error: e.message,
+                status: "error"
+            });
+        }
+
+        //console.log(authorId, typeof authorId, " ", req.user._id, typeof req.user._id);
+
+        // Compare user ID and author ID - if true - set status to DELETED
+        if (authorId == req.user._id) {
+            try {
+                const isDeleted = await AdvertisementsModule.remove(id);
+                res.status(200).json({
+                    data: isDeleted,
+                    status: "Ok"
+                });
+            } catch(e) {
+                res.status(500).json({
+                    error: e.message,
+                    status: "error"
+                });
+            }
+        } else {
+            res.status(403).json({
+                error: "Нет доступа",
+                status: "error"
+            });
+        }        
     }
 );
 

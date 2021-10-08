@@ -60,8 +60,9 @@ class Advertisements {
         if (tags) {
             tags = tags.split(',');
         }
-
+        
         if (shortText && userId && createdAt && updatedAt) {
+            
             const newAdvertisement = new Advertisement({
                 shortText, 
                 userId,
@@ -77,8 +78,11 @@ class Advertisements {
                 await newAdvertisement.save();            
                 return newAdvertisement;
             } catch(e) {
-                console.error(e.message);
+                return (e);
             };
+        } else {
+            console.log('Недостаточно данных');
+            throw new Error('Недостаточно данных');
         }
     }
 
@@ -88,8 +92,7 @@ class Advertisements {
             const isDeleted = await Advertisement.findByIdAndUpdate(id, {isDeleted: true}, {new: true});
             return isDeleted;
         } catch (e) {
-            console.log(e);
-            return null;
+            return (e);
         }       
     }
 
